@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                // Safely wipes the entire workspace directory before cloning
+                cleanWs()
+                sh 'git clone https://github.com/darshanreddy18/node-js-demo-with-docker.git .'
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                sh 'docker build -t darshanreddy18/webapp-demo:01 -f src/Dockerfile .'
+            }
+        }
+
+        stage('Deploy Container') {
+            steps {
+                sh 'docker stop my-webapp || true'
+                sh 'docker rm my-webapp || true'
+                sh 'docker run -d --name my-webapp -p 3000:3000 darshanreddy18/webapp-demo:01'
+                sh 'docker ps'
+            }
+        }
+        stage('CI/CD Succesfuly'){
+            steps {
+                echo "I HAPPY COMPLETED CI/CD LEARNING WITH PILELINE SCRIPT"
+            }
+         }
+    }
+}
